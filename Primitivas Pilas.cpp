@@ -8,10 +8,12 @@ struct Node{
 
 void menu();
 void push(Node *&, int);
-void pop(Node *&, int&);
+int pop(Node *&);
 bool isVoid(Node *);
-void top(Node *);
+int top(Node *);
 void print_pila(Node *);
+void impares_pares(Node*&);
+void push_par(Node*&, int);
 
 Node *Pila = NULL;
 
@@ -24,7 +26,8 @@ int main(){
         cout<<"3. Determinar si la pila esta vacia\n";
         cout<<"4. Mostrar el valor de la cabeza de la pila\n";
         cout<<"5. Mostrar la pila entera\n";
-        cout<<"6. Salir\n";
+        cout<<"6. Cambiar los pares por los impares\n";
+        cout<<"7. Salir\n";
         cout<<"\n";
         cin>>option;
 
@@ -35,7 +38,7 @@ int main(){
                     break;
 
             case 2: cout<<"Eliminando pila\n";
-                    pop(Pila,value);
+                    pop(Pila);
                     break;
 
             case 3: if(isVoid(Pila)==false){
@@ -48,12 +51,16 @@ int main(){
 
             case 4: cout<<"El tope de la pila es: \n";
                     top(Pila);
+                    cout<<Pila -> value;
                     break;
 
             case 5: print_pila(Pila);
                     break;
+
+            case 6: impares_pares(Pila);
+                    break;
         }
-    }while(option!=6);
+    }while(option!=7);
 }
 
 void push(Node *&Pila, int n){
@@ -63,11 +70,12 @@ void push(Node *&Pila, int n){
     Pila = new_node;
 }
 
-void pop(Node *&Pila, int &n){
+int pop(Node *&Pila){
     Node *aux1 = Pila;
-    n = aux1 -> value;
+    int n = aux1 -> value;
     Pila = aux1 -> next;
     delete aux1;
+    return n;
 }
 
 bool isVoid(Node *Pila){
@@ -77,10 +85,11 @@ bool isVoid(Node *Pila){
     return true;
 }
 
-void top(Node *Pila){
+int top(Node *Pila){
     if(!isVoid(Pila)){
-        cout<<Pila -> value;
+        return Pila -> value;
     }
+    return -1;
 }
 
 void print_pila(Node *Pila){
@@ -90,3 +99,29 @@ void print_pila(Node *Pila){
         aux1 = aux1 -> next;
     }
 }
+
+//------------------------------------------------------------
+void impares_pares(Node *&Pila){
+    if(!isVoid(Pila)){
+        int value = pop(Pila);
+        impares_pares(Pila);
+        if((value % 2) != 0){
+            push(Pila,value);
+        }
+        else{
+            push_par(Pila, value);
+        }
+    }
+}
+
+void push_par(Node *&Pila, int value){
+    if(!isVoid(Pila) && (top(Pila)%2) != 0){
+        int topvalue = pop(Pila);
+        push_par(Pila,value);
+        push(Pila,topvalue);
+    }
+    else{
+        push(Pila,value);
+    }
+}
+//----------------------------------------------------------
